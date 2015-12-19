@@ -6,9 +6,23 @@
  * Time: 1:09 PM
  * Version: Beta 2
  */
+
+/*
+ * definition
+ * base_directory
+ *
+ * Info:
+ * Defines the base path used for including/detecting modules & resources.
+ */
+define('base_directory', rtrim(realpath(__DIR__), '/').'/');
+
+define('module_file', base_directory."/Modules/{name}.php");
+
 class WebCore
 {
+
     /*
+     * function
      * exists
      *
      * Parameters:
@@ -17,8 +31,12 @@ class WebCore
      * Info:
      * Returns true if the specified module exists.
      */
+    public static function exists($name) {
+        return file_exists(str_replace("{name}", $name, module_file));
+    }
 
     /*
+     * function
      * get_module
      *
      * Parameters:
@@ -27,14 +45,52 @@ class WebCore
      * Info:
      * Returns the instance, or array of instances of the specified module(s).
      */
+    public static function get_module($name) {
+        $multiple = is_array($name);
+        if($multiple) {
+            $return = [];
+            foreach($name as $n) {
+                if(self::exists($n)) {
+                    $return[$n] = self::reflect_get($n);
+                }
+            }
+            return $return;
+        }
+        return self::reflect_get($name);
+    }
 
     /*
-     * load_module
+     * function
+     * reflect_get
      *
      * Parameters:
-     * name - string/array - name of module(s) to load
+     * name - string - name of the file to retrieve via reflection
      *
      * Info:
-     * Loads the specified module(s), and any of the required dependencies.
+     * Returns a new instance of the class($file) using reflection.
+     *
+     * Throws:
+     * ModuleInvalidException
      */
+    private static function reflect_get($name) {
+        if(self::exists($name)) {
+            $location = str_replace("{name}", $name, module_file);
+
+            include_once($location);
+            $path_info = pathinfo($location);
+            $reflector = new ReflectionClass($path_info['filename']);
+            $instance = $reflector->newInstance();
+
+            if($instance instanceof Module) {
+                foreach($instance->get_depends() as $dependency) {
+                    if(!self::exists($dependency)) {
+                        throw new MissingDependencyException($name, $dependency);
+                    }
+                }
+                return $instance;
+            }
+            throw new ModuleInvalidException($name);
+        }
+        throw new ModuleInvalidException($name);
+    }
 }

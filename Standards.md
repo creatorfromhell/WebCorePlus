@@ -92,7 +92,7 @@ The creatorfromhell PHP, aka CFH PHP,  Code Quality Standards were created to es
 * Indentation should be done with four spaces, not tabs.
 * Do not  place spaces before or after the concatenation operator(".")
 * Place a space before and after the concatenating assignment operator(".=")
-* Always use the clean_input() method on user provided values
+* Always sanitize user-provided variables that will be places in a database
 * Always use PHP_EOL instead of specifying a line separator
 * Always use DIRECTORY_SEPARATOR instead of specifying a separator
 * Never assume a variable is an instance of a class. Always check using instanceof before using variables/methods.
@@ -101,7 +101,31 @@ The creatorfromhell PHP, aka CFH PHP,  Code Quality Standards were created to es
 *The following rules are not in effect yet, but appear here to provide ample time to update current code to follow each of them.*
 * PHP 7 Specific
   * Use coalescing operator(??) where possible
-*General
+* General
+* Documentation
+  * All functions, variables, and definitions must have a PHPDoc Block attached to them.
+  * Doc Blocks must be in the format, and include the information that follows when possible:
+  ```php
+    /**
+     * @type function (the type of object we're documenting)
+     * @name do_something (the name of our object)
+     *
+     * Parameters: //only if the object is a function
+     * @param example_parameter - string(parameter type) - An example parameter(parameter description)
+     *
+     * Info: //description of this object
+     * @desc Returns true if @example_parameter is not null.
+     *
+     * Throws: //only if it's possible for this function to directory throw an exception.
+     * @exception Exception(name of the exception thrown) - If the parameter is null(why it throws it).
+     */
+     public function do_something($example_parameter) {
+         if(is_null($example_parameter)) {
+             throw new Exception("Parameter is null!");
+         }
+         return true;
+     }
+    ```
 
 ## Modification
 The CFH PHP Code Quality Standards may change from time to time, because of this, it is the sole responsibility of each contributor to stay up-to-date on these standards when making modifications to the project's source code.
