@@ -103,28 +103,28 @@ The creatorfromhell PHP, aka CFH PHP,  Code Quality Standards were created to es
   * Use coalescing operator(??) where possible
 * General
 * Documentation
-  * All functions, variables, and definitions must have a PHPDoc Block attached to them.
+  * All objects must have a PHPDoc Block attached to them.
   * Doc Blocks must be in the format, and include the information that follows when possible:
   ```php
-    /**
-     * @type function (the type of object we're documenting)
-     * @name do_something (the name of our object)
-     *
-     * Parameters: //only if the object is a function
-     * @param example_parameter - string(parameter type) - An example parameter(parameter description)
-     *
-     * Info: //description of this object
-     * @desc Returns true if @example_parameter is not null.
-     *
-     * Throws: //only if it's possible for this function to directory throw an exception.
-     * @exception Exception(name of the exception thrown) - If the parameter is null(why it throws it).
-     */
-     public function do_something($example_parameter) {
-         if(is_null($example_parameter)) {
-             throw new Exception("Parameter is null!");
-         }
-         return true;
-     }
+    /**    
+     * @type function (the type of object we're documenting)    
+     * @name do_something (the name of our object)    
+     *    
+     * Parameters: //only if the object is a function    
+     * @param example_parameter - string(parameter type) - An example parameter(parameter description)    
+     *    
+     * Info: //description of this object    
+     * @desc Returns true if @example_parameter is not null.    
+     *    
+     * Throws: //only if it's possible for this function to directory throw an exception.    
+     * @exception Exception(name of the exception thrown) - If the parameter is null(why it throws it).    
+     */    
+     public function do_something($example_parameter) {    
+         if(is_null($example_parameter)) {    
+             throw new Exception("Parameter is null!");    
+         }    
+         return true;    
+     }    
     ```
 
 ## Modification

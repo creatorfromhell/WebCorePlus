@@ -83,10 +83,13 @@ class WebCore
 
             if($instance instanceof Module) {
                 foreach($instance->get_depends() as $dependency) {
-                    if(!self::exists($dependency)) {
-                        throw new MissingDependencyException($name, $dependency);
+                    if(self::exists($dependency)) {
+                        self::reflect_get($dependency);
+                        continue;
                     }
+                    throw new MissingDependencyException($name, $dependency);
                 }
+                $instance->init_module();
                 return $instance;
             }
             throw new ModuleInvalidException($name);
