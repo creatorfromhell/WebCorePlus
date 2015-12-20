@@ -15,75 +15,28 @@ class ModuleConfiguration
     public function __construct($file, $defaults = array()) {
         $this->file = $file;
         $this->defaults = $defaults;
-
-        $this->read_file();
-    }
-
-    public function get_configuration($section, $identifier) {
-        $section = $this->configurations[$section];
-        if($section instanceof ConfigurationSection) {
-            return $section->get_configuration($identifier);
-        }
-        return null;
+        $this->configurations = array();
     }
 
     public function write_file($use_defaults = false) {
         $file = fopen($this->file, "w");
         $using = ($use_defaults) ? $this->defaults : $this->configurations;
 
-        foreach($using as $section) {
-            if($section instanceof ConfigurationSection) {
-
-                fwrite($file, "[".$section->get_name()."]/n");
-                foreach($section->get_comments() as $comment) {
-                    fwrite($file, $comment."/n");
-                }
-
-                foreach($section->get_configurations() as $key => $value) {
-                    fwrite($file, $key." = ".$value."/n");
-                }
-                fwrite($file, "/n");
+        foreach($using as $section => $configurations) {
+            fwrite($file, "[".$section."]\n");
+            foreach($configurations as $key => $value) {
+                fwrite($file, $key." = ".$value."\n");
             }
+            fwrite($file, "\n");
         }
         fclose($file);
     }
 
     public function read_file() {
         if(file_exists($this->file)) {
-            $file = fopen($this->file, "r");
-            $lines = explode('/n', fread($file, filesize($this->file)));
-            fclose($file);
-
-            $section = null;
-            $comments = array();
-            foreach($lines as &$line) {
-                $modified = trim($line);
-                if($modified[0] == '[') {
-                    if($section instanceof ConfigurationSection) {
-                        $section->set_comments($comments);
-                        $this->configurations[$section->get_name()] = $section;
-
-                        $section = null;
-                        $comments = array();
-                    }
-                    $section = new ConfigurationSection(trim($line, "[] \t\n\r\0\x0B"));
-                    continue;
-                }
-
-                if($modified[0] == ';' || $modified[0] == '#') {
-                    $comments[] = $modified;
-                    continue;
-                }
-
-                if($section instanceof ConfigurationSection) {
-                    $spaced = (strpos($modified, ' = ') !== FALSE);
-                    $broken = ($spaced) ? explode(' = ', $modified) : explode('=', $modified);
-
-                    $section->set_configuration($broken[0], $broken[1]);
-                }
-            }
-            return;
+            return parse_ini_file($this->file, true);
         }
         $this->write_file(true);
+        return $this->defaults;
     }
 }

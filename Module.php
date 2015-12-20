@@ -32,15 +32,19 @@ abstract class Module
 
     /**
      * @type function
-     * @name get_config_file
+     * @name load_configurations
      *
      * Info:
-     * @desc Returns the specified configuration value located in this module's config.ini.
+     * @desc Loads this module's configuration file, and merges the values with the defaults provided.
      */
-    public function get_config_file($defaults = array()) {
+    public function load_configurations() {
+        if(!file_exists($this->get_directory())) {
+            mkdir($this->get_directory());
+        }
         $location = $this->get_directory()."config.ini";
 
-        return new ModuleConfiguration($location, $defaults);
+        $configuration_file = new ModuleConfiguration($location, $this->configurations);
+        $this->configurations = $configuration_file->read_file();
     }
 
     /*
@@ -54,17 +58,16 @@ abstract class Module
      * Returns the specified configuration value located in this module's config.ini.
      */
     public function get_config($section, $option) {
-        $configuration = $this->get_config_file();
-        if($configuration instanceof ModuleConfiguration) {
-            return $configuration->get_configuration($section, $option);
-        }
-        return null;
+        $this->load_configurations();
+
+        return $this->get_configuration($section, $option);
     }
 }
 
 trait ModuleInfo {
     private $name;
     private $depends = array();
+    private $configurations = array();
     private $directory;
 
     public function get_name() {
@@ -81,6 +84,22 @@ trait ModuleInfo {
 
     public function set_depends($depends) {
         $this->depends = (is_array($depends)) ? $depends : array($depends);
+    }
+
+    public function get_configurations() {
+        return $this->configurations;
+    }
+
+    public function set_configurations($configurations) {
+        $this->configurations = (is_array($configurations)) ? $configurations : array($configurations);
+    }
+
+    public function get_configuration($section, $option) {
+        return $this->configurations[$section][$option];
+    }
+
+    public function set_configuration($section, $option, $value) {
+        $this->configurations[$section][$option] = $value;
     }
 
     public function get_directory() {
