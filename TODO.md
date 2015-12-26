@@ -1,8 +1,8 @@
 #Module TODO List
-* Pagination Module
-* Themes Module
-* Languages Module
-* Plugin Module
-* General Utilities Module
-* User Permissions Module
-* Password/Security Module(?)
+* Pagination Module - Wave 2 - done - untested
+* Themes Module - Wave 2 - done - untested
+* Languages Module - Wave 2 - done - untested
+* Plugin Module - Wave 2 - done - untested
+* General Utilities Module - Wave 2 - done
+* User Permissions Module - Wave 2
+* Form Handling Module (?)

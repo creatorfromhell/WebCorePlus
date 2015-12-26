@@ -38,6 +38,10 @@ class CaptchaModule extends Module
         return "";
     }
 
+    public function get_code() {
+        return $this->code;
+    }
+
     /**
      * @return string
      */

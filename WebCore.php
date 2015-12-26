@@ -45,18 +45,18 @@ class WebCore
      * Info:
      * Returns the instance, or array of instances of the specified module(s).
      */
-    public static function get_module($name) {
+    public static function get_module($name, $args = array()) {
         $multiple = is_array($name);
         if($multiple) {
             $return = [];
             foreach($name as $n) {
                 if(self::exists($n)) {
-                    $return[$n] = self::reflect_get($n);
+                    $return[$n] = self::reflect_get($n, $args[$n]);
                 }
             }
             return $return;
         }
-        return self::reflect_get($name);
+        return self::reflect_get($name, $args);
     }
 
     /*
@@ -72,14 +72,14 @@ class WebCore
      * Throws:
      * ModuleInvalidException
      */
-    private static function reflect_get($name) {
+    private static function reflect_get($name, $args = array()) {
         if(self::exists($name)) {
             $location = str_replace("{name}", $name, module_file);
 
             include_once($location);
             $path_info = pathinfo($location);
             $reflector = new ReflectionClass($path_info['filename']);
-            $instance = $reflector->newInstance();
+            $instance = (is_array($args) && count($args) > 0) ? $reflector->newInstanceArgs($args) : $reflector->newInstance();
 
             if($instance instanceof Module) {
                 foreach($instance->get_depends() as $dependency) {

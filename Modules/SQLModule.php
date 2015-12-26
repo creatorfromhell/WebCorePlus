@@ -44,6 +44,11 @@ class SQLModule extends Module
         require_once(parent::get_directory()."SQLReader.php");
     }
 
+    public function get_pdo() {
+        if(!($this->pdo instanceof PDO)) { return null; }
+        return $this->pdo;
+    }
+
     public function query_file($file) {
         $reader = new SQLReader($file);
         $queries = $reader->parse_queries();
@@ -53,11 +58,13 @@ class SQLModule extends Module
     }
 
     public function query($query, $parameters = array()) {
+        if(!($this->pdo instanceof PDO)) { return null; }
         $statement = $this->pdo->prepare($query);
         return $statement->execute($parameters);
     }
 
     public function value($table, $column, $extra = '', $params = array()) {
+        if(!($this->pdo instanceof PDO)) { return null; }
         $statement = $this->pdo->prepare("SELECT ".$column." FROM `".$table."`".$extra);
         $statement->execute($params);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
@@ -65,6 +72,7 @@ class SQLModule extends Module
     }
 
     public function values($table, $column, $extra = '', $params = array()) {
+        if(!($this->pdo instanceof PDO)) { return null; }
         $statement = $this->pdo->prepare("SELECT ".$column." FROM `".$table."`".$extra);
         $statement->execute($params);
         $result = $statement->fetchAll(PDO::FETCH_COLUMN);
@@ -83,6 +91,7 @@ class SQLModule extends Module
     }
 
     public function count_columns($table, $extra = '', $params = array()) {
+        if(!($this->pdo instanceof PDO)) { return null; }
         $statement = $this->pdo->prepare("SELECT * FROM `".$table."`".$extra);
         $statement->execute($params);
         return $statement->fetch(PDO::FETCH_NUM);
