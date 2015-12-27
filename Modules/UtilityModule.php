@@ -75,4 +75,16 @@ class UtilityModule extends Module
             mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
         );
     }
+
+    public static function get_ip() {
+        $ip = "";
+        if (isset($_SERVER["REMOTE_ADDR"])) {
+            $ip = $_SERVER["REMOTE_ADDR"]."";
+        } else if ( isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ) {
+            $ip = $_SERVER["HTTP_X_FORWARDED_FOR"]."";
+        } else if ( isset($_SERVER["HTTP_CLIENT_IP"]) ) {
+            $ip = $_SERVER["HTTP_CLIENT_IP"]."";
+        }
+        return $ip;
+    }
 }

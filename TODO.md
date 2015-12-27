@@ -4,5 +4,5 @@
 * Languages Module - Wave 2 - done - untested
 * Plugin Module - Wave 2 - done - untested
 * General Utilities Module - Wave 2 - done
-* User Permissions Module - Wave 2
+* Permissions Module - Wave 2
 * Form Handling Module (?)

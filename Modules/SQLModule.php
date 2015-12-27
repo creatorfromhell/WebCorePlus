@@ -21,7 +21,8 @@ class SQLModule extends Module
                 "sql_host" => "localhost",
                 "sql_db" => "database",
                 "sql_user" => "user",
-                "sql_password" => "password"
+                "sql_password" => "password",
+                "sql_prefix" => "WC"
             )
         ));
 
